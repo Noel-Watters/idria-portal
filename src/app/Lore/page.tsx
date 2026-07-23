@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image"
 import { BadgeInfo } from "lucide-react"
+import Link from "next/link";
 
 export default function LorePage() {
  
@@ -24,6 +25,18 @@ export default function LorePage() {
             <p className="text-primary text-sm flex items-start gap-2">
               <BadgeInfo className="w-4 h-4 mt-0.5 shrink-0" />
               Idria is currently in early development. The website and in-game systems are still in the works! Everything is highly subject to change. Enjoy following along in the development process with us. </p>
+            <p> Idria is located within Faerûn within the Forgotten Realms setting. The current year is 1495  </p>
+            <p>For lore regarding the Forgotten Realms Setting, check out {" "}
+                <Link
+                    href="https://forgottenrealms.fandom.com/wiki/Main_Page"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:opacity-80"
+                    >
+                        the Forgotten Realms Wiki
+                </Link>
+            </p>
+
 
             <h3>The Kingdom of Idria</h3>
             <p>Once counted among the most prosperous kingdoms, Idria was a land of fertile fields, ancient forests, and thriving trade. Powerful sorcerous shaped much of the kingdom's history, with House Vigar ruling from the magnificent capital of Thoremere. The kingdom's arcane achievements became renowned throughout the region, aided by the legendary order of mages known as the Virtuosos.</p>
