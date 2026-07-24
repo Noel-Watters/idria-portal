@@ -13,6 +13,7 @@ import {
 import Link from "next/link"
 import { BookOpen, ScrollText } from "lucide-react"
 import Image from "next/image"
+import DiscordLoginButton from "./auth/DiscordButtonLogin"
 
 const IdriaLogo = () => (
   <Image src="/Bright-Idria Logo.png" alt="Home" width={25} height={25} className="object-contain" />
@@ -42,6 +43,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <DiscordLoginButton />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
