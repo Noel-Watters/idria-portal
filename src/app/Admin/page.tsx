@@ -1,42 +1,32 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import LogoutButton from "@/components/auth/LogoutButton";
+import { requireUser } from "@/lib/auth";
 
-export default async function AdminPage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
-    redirect("/login");
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from("profile")
-    .select("display_name, staff_role, is_banned")
-    .eq("id", user.id)
-    .single();
-
-  if (profileError || !profile) {
-    redirect("/");
-  }
-
-  if (profile.is_banned) {
-    redirect("/");
-  }
-
-  const allowedRoles = ["Owner", "Admin"];
-
-  if (!profile.staff_role || !allowedRoles.includes(profile.staff_role)) {
-    redirect("/");
-  }
+export default async function AccountPage() {
+  const { profile } = await requireUser();
 
   return (
     <main>
       <h1>Admin Dashboard</h1>
-      <p>Welcome, {profile.display_name ?? "Staff Member"}.</p>
+
+      <p>
+        Welcome,{" "}
+        {profile.display_name ??
+          profile.username ??
+          "Idria Member"}
+      </p>
+
+      <p>
+        Whitelist status:{" "}
+        {profile.is_whitelisted
+          ? "Whitelisted"
+          : "Not Whitelisted"}
+      </p>
+
+      {profile.staff_role && (
+        <p>Staff role: {profile.staff_role}</p>
+      )}
+
+      <LogoutButton />
     </main>
   );
 }
