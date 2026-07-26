@@ -1,31 +1,17 @@
 "use client";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import type {
-  NavigationGroupOption,
-  StaffRoleKey,
-  WikiPage,
-  WikiPageStatus,
-  WikiRoleOption,
-} from "@/types/wiki";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { navigation_group, StaffRoleKey, WikiPageStatus, page_dashboard} from "@/types/wiki";
 import WikiStatusControl from "./WikiStatusControl";
+import { role } from "@/types/role";
 
 type WikiPageRowProps = {
-  page: WikiPage;
-  roles: WikiRoleOption[];
-  navigationGroups: NavigationGroupOption[];
+  page: page_dashboard;
+  roles: role[];
+  navigationGroups: navigation_group[];
   currentUserRole: StaffRoleKey;
 
   onStatusChange: (
-    page: WikiPage,
+    page: page_dashboard,
     status: WikiPageStatus
   ) => void;
 
@@ -94,7 +80,7 @@ export default function WikiPageRow({
             items ={navigationItems}
             value={
                 navigationGroups.find(
-                    (group) => group.name === page.navigationGroup
+                    (group) => group.name === page.navigation_group_id
                 )?.id ?? ""
             }
             onValueChange={(value) => {
@@ -123,7 +109,7 @@ export default function WikiPageRow({
       <LabeledControl label="Edit">
         <RoleSelect
           roles={roles}
-          value={page.editRoleId}
+          value={page.edit_role_id}
           disabled={!canManagePermissions}
           onChange={(roleId) =>
             onEditRoleChange(page.id, roleId)
@@ -134,7 +120,7 @@ export default function WikiPageRow({
       <LabeledControl label="Publish">
         <RoleSelect
           roles={roles}
-          value={page.publishRoleId}
+          value={page.publish_role_id}
           disabled={!canManagePermissions}
           onChange={(roleId) =>
             onPublishRoleChange(page.id, roleId)
@@ -144,13 +130,13 @@ export default function WikiPageRow({
 
       <LabeledValue
         label="Updated by"
-        value={page.updatedBy}
+        value={page.updated_by}
       />
 
       <LabeledValue
         label="Last updated"
-        value={formatUpdatedAt(page.updatedAt)}
-        title={new Date(page.updatedAt).toLocaleString()}
+        value={formatUpdatedAt(page.updated_at)}
+        title={new Date(page.updated_at).toLocaleString()}
       />
 
       <LabeledControl label="Status">
@@ -172,7 +158,7 @@ function RoleSelect({
   disabled,
   onChange,
 }: {
-  roles: WikiRoleOption[];
+  roles: role[];
   value: string;
   disabled: boolean;
   onChange: (value: string) => void;
@@ -202,7 +188,7 @@ function RoleSelect({
           <SelectItem key={role.id} value={role.id}>
             <span
               style={{
-                color: role.colorHex,
+                color: role.color_hex ?? undefined,
               }}
             >
               {role.name}

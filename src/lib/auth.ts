@@ -1,9 +1,7 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
-
 import { createClient } from "@/lib/supabase/server";
-
-import { IdriaProfile } from "@/types/profile";
+import { profile } from "@/types/profile";
 
 export const getCurrentUser = cache(async () => {
   const supabase = await createClient();
@@ -37,7 +35,7 @@ export const getCurrentUser = cache(async () => {
       )
     `)
     .eq("id", user.id)
-    .single<IdriaProfile>();
+    .single<profile>();
 
   if (profileError || !profile) {
     console.error(profileError);

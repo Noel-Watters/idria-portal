@@ -1,31 +1,11 @@
 "use client";
-
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 import { SiDiscord } from "@icons-pack/react-simple-icons";
 import { createClient } from "@/lib/supabase/client";
-
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem} from "@/components/ui/sidebar";
 
 type SidebarUser = {
   displayName: string;

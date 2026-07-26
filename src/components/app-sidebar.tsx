@@ -1,10 +1,8 @@
-import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarHeader, SidebarFooter, SidebarTrigger,} from "@/components/ui/sidebar"
-import SidebarAccount from "@/components/ui/SidebarAccount";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarHeader, SidebarFooter, SidebarTrigger,} from "@/components/ui/sidebar"
+import SidebarAccount from "@/components/SidebarAccount";
 import Link from "next/link"
 import { BookOpen, ScrollText } from "lucide-react"
 import Image from "next/image"
-import { SiDiscord } from "@icons-pack/react-simple-icons";
 import { getCurrentUser } from "@/lib/auth";
 
 const IdriaLogo = () => (

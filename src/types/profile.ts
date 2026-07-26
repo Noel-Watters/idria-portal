@@ -1,11 +1,11 @@
-import { IdriaRole } from "./role";
+import { role } from "./role";
 
-export type IdriaProfile = {
+export type profile = {
   id: string;
   username: string;
   display_name: string | null;
   avatar_url: string | null;
-  role: IdriaRole | null;
+  role: role | null;
   is_whitelisted: boolean;
   is_banned: boolean;
 };

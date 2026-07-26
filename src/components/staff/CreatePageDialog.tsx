@@ -1,53 +1,29 @@
 "use client";
-
 import { useMemo, useState } from "react";
-import {Plus} from "lucide-react"
-
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-import type {
-  CreateWikiPageInput,
-  NavigationGroupOption,
-  WikiRoleOption,
-  WikiTemplate,
-} from "@/types/wiki";
-
-type TemplateOption = {
-  value: WikiTemplate;
-  label: string;
-};
+import { Select, SelectContent, SelectItem,  SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { CreateWikiPageInput, navigation_group, WikiTemplate} from "@/types/wiki";
+import { role } from "@/types/role";
 
 type CreatePageDialogProps = {
-  roles: WikiRoleOption[];
-  navigationGroups: NavigationGroupOption[];
-  templates: TemplateOption[];
-  onCreate: (input: CreateWikiPageInput) => void;
+  roles: role[];
+  navigationGroups: navigation_group[];
+  templates: WikiTemplate[];
+  onCreate: (
+    input: CreateWikiPageInput
+  ) => void | Promise<void>;
 };
 
 const initialForm: CreateWikiPageInput = {
   title: "",
-  navigationGroup: "",
-  template: "general",
-  editRoleId: "",
-  publishRoleId: "",
+  navigation_group: "",
+  template: "General",
+  edit_role_id: "",
+  publish_role_id: "",
 };
 
 export default function CreatePageDialog({
@@ -57,13 +33,20 @@ export default function CreatePageDialog({
   onCreate,
 }: CreatePageDialogProps) {
   const [open, setOpen] = useState(false);
+
   const [form, setForm] =
     useState<CreateWikiPageInput>(initialForm);
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
   const selectedNavigationGroup =
     navigationGroups.find(
-      (group) => group.id === form.navigationGroup
+      (group) =>
+        group.id === form.navigation_group
     ) ?? null;
 
   const generatedPath = useMemo(() => {
@@ -80,9 +63,14 @@ export default function CreatePageDialog({
     }
 
     return `/${selectedNavigationGroup.path}/${titlePath}`;
-  }, [form.title, selectedNavigationGroup]);
+  }, [
+    form.title,
+    selectedNavigationGroup,
+  ]);
 
-  function updateForm<K extends keyof CreateWikiPageInput>(
+  function updateForm<
+    K extends keyof CreateWikiPageInput,
+  >(
     field: K,
     value: CreateWikiPageInput[K]
   ) {
@@ -94,11 +82,31 @@ export default function CreatePageDialog({
     setErrorMessage("");
   }
 
-  function handleCreate() {
+  function resetDialog() {
+    setForm(initialForm);
+    setErrorMessage("");
+    setIsSubmitting(false);
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    if (isSubmitting) {
+      return;
+    }
+
+    setOpen(nextOpen);
+
+    if (!nextOpen) {
+      resetDialog();
+    }
+  }
+
+  async function handleCreate() {
     const title = form.title.trim();
 
     if (!title) {
-      setErrorMessage("A page name is required.");
+      setErrorMessage(
+        "A page name is required."
+      );
       return;
     }
 
@@ -109,72 +117,126 @@ export default function CreatePageDialog({
       return;
     }
 
-    if (
-      !form.navigationGroup ||
-      !form.editRoleId ||
-      !form.publishRoleId
-    ) {
+    if (!form.navigation_group) {
       setErrorMessage(
-        "Complete all required dropdown fields."
+        "Select a navigation group."
       );
       return;
     }
 
-    onCreate({
-      ...form,
-      title,
-    });
+    if (!form.edit_role_id) {
+      setErrorMessage(
+        "Select an edit role."
+      );
+      return;
+    }
 
-    setForm(initialForm);
+    if (!form.publish_role_id) {
+      setErrorMessage(
+        "Select a publish role."
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
     setErrorMessage("");
-    setOpen(false);
+
+    try {
+      /*
+       * DATABASE CONNECTION:
+       * WikiDashboard passes its create-page handler here.
+       */
+      await onCreate({
+        ...form,
+        title,
+      });
+
+      resetDialog();
+      setOpen(false);
+    } catch (error) {
+      console.error(
+        "Create page failed:",
+        error
+      );
+
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "The page could not be created."
+      );
+
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Page
-        </DialogTrigger>
+    <Dialog
+      open={open}
+      onOpenChange={handleOpenChange}
+    >
+      <DialogTrigger
+        render={
+          <Button disabled={isSubmitting} />
+        }
+      >
+        <Plus className="mr-2 size-4" />
+        Create Page
+      </DialogTrigger>
 
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Create wiki page</DialogTitle>
+          <DialogTitle>
+            Create wiki page
+          </DialogTitle>
 
           <DialogDescription>
-            Create a new draft page. Its path is generated from
-            the navigation group and page name.
+            Create a new draft page. Its path is
+            generated from the navigation group and
+            page name.
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-5 py-2">
           <div className="grid gap-2">
-            <Label htmlFor="page-title">Page name</Label>
+            <Label htmlFor="page-title">
+              Page name
+            </Label>
 
             <Input
               id="page-title"
               value={form.title}
               placeholder="Character Creation"
+              disabled={isSubmitting}
               onChange={(event) =>
-                updateForm("title", event.target.value)
+                updateForm(
+                  "title",
+                  event.target.value
+                )
               }
             />
 
             <p className="text-xs text-muted-foreground">
-              The first character must be capitalized.
+              The first character must be
+              capitalized.
             </p>
           </div>
 
           <FormSelect
             label="Navigation group"
-            value={form.navigationGroup}
+            value={form.navigation_group}
             placeholder="Select navigation group"
-            options={navigationGroups.map((group) => ({
-              value: group.id,
-              label: group.name,
-            }))}
+            disabled={isSubmitting}
+            options={navigationGroups.map(
+              (group) => ({
+                value: group.id,
+                label: group.name,
+              })
+            )}
             onChange={(value) =>
-              updateForm("navigationGroup", value)
+              updateForm(
+                "navigation_group",
+                value
+              )
             }
           />
 
@@ -182,7 +244,13 @@ export default function CreatePageDialog({
             label="Template"
             value={form.template}
             placeholder="Select page template"
-            options={templates}
+            disabled={isSubmitting}
+            options={templates.map(
+              (template) => ({
+                value: template,
+                label: template,
+              })
+            )}
             onChange={(value) =>
               updateForm(
                 "template",
@@ -193,27 +261,35 @@ export default function CreatePageDialog({
 
           <FormSelect
             label="Edit role"
-            value={form.editRoleId}
+            value={form.edit_role_id}
             placeholder="Select edit role"
+            disabled={isSubmitting}
             options={roles.map((role) => ({
               value: role.id,
               label: role.name,
             }))}
             onChange={(value) =>
-              updateForm("editRoleId", value)
+              updateForm(
+                "edit_role_id",
+                value
+              )
             }
           />
 
           <FormSelect
             label="Publish role"
-            value={form.publishRoleId}
+            value={form.publish_role_id}
             placeholder="Select publish role"
+            disabled={isSubmitting}
             options={roles.map((role) => ({
               value: role.id,
               label: role.name,
             }))}
             onChange={(value) =>
-              updateForm("publishRoleId", value)
+              updateForm(
+                "publish_role_id",
+                value
+              )
             }
           />
 
@@ -228,7 +304,10 @@ export default function CreatePageDialog({
           </div>
 
           {errorMessage && (
-            <p className="text-sm text-destructive">
+            <p
+              role="alert"
+              className="text-sm text-destructive"
+            >
               {errorMessage}
             </p>
           )}
@@ -238,13 +317,22 @@ export default function CreatePageDialog({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setOpen(false)}
+            disabled={isSubmitting}
+            onClick={() =>
+              handleOpenChange(false)
+            }
           >
             Cancel
           </Button>
 
-          <Button type="button" onClick={handleCreate}>
-            Create Page
+          <Button
+            type="button"
+            disabled={isSubmitting}
+            onClick={handleCreate}
+          >
+            {isSubmitting
+              ? "Creating..."
+              : "Create Page"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -252,14 +340,17 @@ export default function CreatePageDialog({
   );
 }
 
+type FormSelectOption = {
+  value: string;
+  label: string;
+};
+
 type FormSelectProps = {
   label: string;
   value: string;
   placeholder: string;
-  options: Array<{
-    value: string;
-    label: string;
-  }>;
+  options: FormSelectOption[];
+  disabled?: boolean;
   onChange: (value: string) => void;
 };
 
@@ -268,19 +359,27 @@ function FormSelect({
   value,
   placeholder,
   options,
+  disabled = false,
   onChange,
 }: FormSelectProps) {
   return (
     <div className="grid gap-2">
       <Label>{label}</Label>
 
-      <Select value={value}  onValueChange={(newValue) => {
-    if (newValue !== null) {
-      onChange(newValue);
-    }
-  }}>
+      <Select
+        items={options}
+        value={value || null}
+        disabled={disabled}
+        onValueChange={(newValue) => {
+          if (newValue !== null) {
+            onChange(newValue);
+          }
+        }}
+      >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder={placeholder} />
+          <SelectValue
+            placeholder={placeholder}
+          />
         </SelectTrigger>
 
         <SelectContent>

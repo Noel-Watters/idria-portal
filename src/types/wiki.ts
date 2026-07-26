@@ -1,18 +1,20 @@
+import type { role } from "./role";
+
 export type WikiPageStatus =
   | "draft"
   | "pending"
   | "published";
 
 export type WikiTemplate =
-  | "general"
-  | "rules"
-  | "lore"
-  | "race"
-  | "class"
-  | "item"
-  | "location"
-  | "faction"
-  | "npc";
+  | "General"
+  | "Rules"
+  | "Lore"
+  | "Race"
+  | "Class"
+  | "Item"
+  | "Location"
+  | "Faction"
+  | "NPC";
 
 export type StaffRoleKey =
   | "owner"
@@ -27,13 +29,50 @@ export interface WikiRoleOption {
   colorHex: string;
 }
 
-export interface NavigationGroupOption {
+export interface navigation_group {
   id: string;
   name: string;
   path: string;
+  position: number;
+  is_active: boolean;
 }
 
-export interface WikiPage {
+export interface CreateWikiPageInput {
+  title: string;
+  template: WikiTemplate;
+  navigation_group: string;
+  edit_role_id: string;
+  publish_role_id: string;
+}
+
+export interface page {
+  id: string;
+
+  title: string;
+  path: string;
+  template: WikiTemplate;
+
+  content: Record<string, unknown>;
+
+  status: WikiPageStatus;
+
+  show_in_navigation: boolean;
+
+  navigation_group_id: string;
+
+  created_by: string;
+  updated_by: string;
+
+  created_at: string;
+  updated_at: string;
+  published_at: string | null;
+
+  edit_role_id: string;
+  publish_role_id: string;
+
+}
+
+export interface page_dashboard {
   id: string;
 
   title: string;
@@ -42,21 +81,11 @@ export interface WikiPage {
 
   status: WikiPageStatus;
 
-  navigationGroup: string | null;
-  navigationLabel: string | null;
-  navigationOrder: number | null;
+  navigation_group_id: string;
 
-  editRoleId: string;
-  publishRoleId: string;
+  edit_role_id: string;
+  publish_role_id: string;
 
-  updatedBy: string;
-  updatedAt: string;
-}
-
-export interface CreateWikiPageInput {
-  title: string;
-  template: WikiTemplate;
-  navigationGroup: string;
-  editRoleId: string;
-  publishRoleId: string;
+  updated_by: string;
+  updated_at: string;
 }

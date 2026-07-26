@@ -1,21 +1,11 @@
 "use client";
-
 import { ExternalLink } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-
-import type { WikiPage } from "@/types/wiki";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import type { page, page_dashboard } from "@/types/wiki";
 
 type PublishPageDialogProps = {
-  page: WikiPage | null;
+  page: page_dashboard | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onPublish: () => void;
@@ -64,23 +54,7 @@ export default function PublishPageDialog({
             value={`/${page.path}`}
           />
 
-          <ReviewField
-            label="Navigation group"
-            value={page.navigationGroup ?? "None"}
-          />
-
-          <ReviewField
-            label="Navigation label"
-            value={page.navigationLabel ?? "None"}
-          />
-
-          <ReviewField
-            label="Navigation order"
-            value={
-              page.navigationOrder?.toString() ??
-              "End of list"
-            }
-          />
+          
         </dl>
 
         <DialogFooter>

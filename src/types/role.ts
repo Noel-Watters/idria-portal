@@ -1,4 +1,4 @@
-export type IdriaRole = {
+export type role = {
   id: string;
   name: string;
   key: string;
