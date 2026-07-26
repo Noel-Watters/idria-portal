@@ -19,6 +19,11 @@ export async function GET() {
         edit_role_id,
         publish_role_id,
         updated_by,
+        updated_profile:profile!pages_updated_by_fkey (
+          id,
+          display_name,
+          username
+        ),
         updated_at
       `)
       .order("updated_at", {

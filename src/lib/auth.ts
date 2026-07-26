@@ -29,6 +29,7 @@ export const getCurrentUser = cache(async () => {
         id,
         name,
         key,
+        rank,
         color_hex,
         is_staff,
         is_active

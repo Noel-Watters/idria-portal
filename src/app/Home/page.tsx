@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image"
 import { BadgeInfo } from "lucide-react"
+import DevtNotice from "@/components/DevNotice";
 
 export default function HomePage() {
  
@@ -29,9 +30,7 @@ export default function HomePage() {
             <p>Rather than rushing from event to event, Idria embraces a slower, more immersive style of roleplay. Player choices have lasting consequences, 
               settlements grow and change over time, and the stories created by the community become part of the world's history. With regular content updates, evolving storylines, 
               and a focus on collaborative storytelling, Idria is a world built to grow alongside its players.</p>
-            <p className="text-primary text-sm flex items-start gap-2">
-              <BadgeInfo className="w-4 h-4 mt-0.5 shrink-0" />
-              Idria is currently in early development. The website and in-game systems are still in the works! Everything is highly subject to change. Enjoy following along in the development process with us. </p>
+            <DevtNotice />
             
             <hr className="border-border-medium my-6" />
 

@@ -1,11 +1,6 @@
 "use client";
-
-import { useState } from "react";
-import {
-  EditorContent,
-  type JSONContent,
-  useEditor,
-} from "@tiptap/react";
+import { useEffect } from "react";
+import { EditorContent, useEditor} from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
@@ -17,41 +12,48 @@ import Highlight from "@tiptap/extension-highlight";
 import Toolbar from "./Toolbar";
 import "./Editor.css";
 
-const initialContent: JSONContent = {
-  type: "doc",
-  content: [
-    {
-      type: "heading",
-      attrs: {
-        level: 1,
-      },
-      content: [
-        {
-          type: "text",
-          text: "Idria Server Rules",
-        },
-      ],
-    },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "Use this page to write and organize the server rules.",
-        },
-      ],
-    },
-  ],
+type PageEditorProps = {
+  content: Record<string, unknown>;
+  onChange: (
+    content: Record<string, unknown>
+  ) => void;
 };
 
-export default function Editor() {
-  const [content, setContent] = useState<JSONContent>(initialContent);
+function isValidContent(
+  content: Record<string, unknown>
+) {
+  return (
+    content &&
+    content.type === "doc"
+  );
+}
+
+function getSafeContent(
+  content: Record<string, unknown>
+) {
+  if (isValidContent(content)) {
+    return content;
+  }
+
+  return {
+    type: "doc",
+    content: [],
+  };
+}
+
+export default function Editor({
+  content,
+  onChange,
+}: PageEditorProps) {
 
   const editor = useEditor({
     immediatelyRender: false,
 
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        link: false,
+        underline: false,
+      }),
 
       Underline,
 
@@ -78,15 +80,18 @@ export default function Editor() {
       }),
 
       Placeholder.configure({
-        placeholder: "Begin writing the rules...",
+        placeholder: "Begin writing...",
       }),
 
       TextAlign.configure({
-        types: ["heading", "paragraph"],
+        types: [
+          "heading",
+          "paragraph",
+        ],
       }),
     ],
 
-    content: initialContent,
+    content: getSafeContent(content),
 
     editorProps: {
       attributes: {
@@ -95,9 +100,31 @@ export default function Editor() {
     },
 
     onUpdate({ editor }) {
-      setContent(editor.getJSON());
+      onChange(editor.getJSON());
     },
   });
+
+
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    const safeContent = getSafeContent(content);
+
+    const currentContent = editor.getJSON();
+
+    if (
+      JSON.stringify(currentContent) !==
+      JSON.stringify(safeContent)
+    ) {
+      editor.commands.setContent(
+        safeContent
+      );
+    }
+
+  }, [content, editor]);
+
 
   if (!editor) {
     return (
@@ -107,6 +134,7 @@ export default function Editor() {
     );
   }
 
+
   return (
     <div className="editor-shell">
       <Toolbar editor={editor} />
@@ -114,9 +142,17 @@ export default function Editor() {
       <EditorContent editor={editor} />
 
       <section className="editor-debug">
-        <h2>Saved content preview</h2>
+        <h2>
+          Saved content preview
+        </h2>
 
-        <pre>{JSON.stringify(content, null, 2)}</pre>
+        <pre>
+          {JSON.stringify(
+            content,
+            null,
+            2
+          )}
+        </pre>
       </section>
     </div>
   );

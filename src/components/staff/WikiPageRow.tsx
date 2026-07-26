@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { navigation_group, StaffRoleKey, WikiPageStatus, page_dashboard} from "@/types/wiki";
 import WikiStatusControl from "./WikiStatusControl";
 import { role } from "@/types/role";
+import { formatDate } from "@/lib/date";
 
 type WikiPageRowProps = {
   page: page_dashboard;
@@ -130,12 +131,12 @@ export default function WikiPageRow({
 
       <LabeledValue
         label="Updated by"
-        value={page.updated_by}
+        value={page.updated_profile?.display_name ?? page.updated_profile?.username ?? "Unknown"}
       />
 
       <LabeledValue
         label="Last updated"
-        value={formatUpdatedAt(page.updated_at)}
+        value={formatDate(page.updated_at)}
         title={new Date(page.updated_at).toLocaleString()}
       />
 
@@ -240,15 +241,3 @@ function LabeledValue({
   );
 }
 
-function formatUpdatedAt(value: string) {
-  const date = new Date(value);
-
-  return (
-    date.toLocaleDateString("en-US") +
-    " " +
-    date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-    })
-  );
-}

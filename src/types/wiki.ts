@@ -45,6 +45,7 @@ export interface CreateWikiPageInput {
   publish_role_id: string;
 }
 
+
 export interface page {
   id: string;
 
@@ -69,6 +70,7 @@ export interface page {
 
   edit_role_id: string;
   publish_role_id: string;
+  updated_profile?: updated_profile | null;
 
 }
 
@@ -88,4 +90,11 @@ export interface page_dashboard {
 
   updated_by: string;
   updated_at: string;
+  updated_profile?: updated_profile | null;
 }
+
+export type updated_profile = {
+  id: string;
+  display_name: string | null;
+  username: string;
+} 
