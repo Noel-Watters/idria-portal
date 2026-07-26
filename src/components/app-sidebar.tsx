@@ -1,19 +1,11 @@
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarHeader, SidebarFooter, SidebarTrigger,} from "@/components/ui/sidebar"
+import SidebarAccount from "@/components/ui/SidebarAccount";
 import Link from "next/link"
 import { BookOpen, ScrollText } from "lucide-react"
 import Image from "next/image"
-import DiscordLoginButton from "./auth/DiscordButtonLogin"
+import { SiDiscord } from "@icons-pack/react-simple-icons";
+import { getCurrentUser } from "@/lib/auth";
 
 const IdriaLogo = () => (
   <Image src="/Bright-Idria Logo.png" alt="Home" width={25} height={25} className="object-contain" />
@@ -25,12 +17,26 @@ const navItems = [
   { title: "Rules", url: "/Rules", icon: ScrollText },
 ]
 
-export function AppSidebar() {
+export async function AppSidebar() {
+    const currentUser = await getCurrentUser();
+
+    const sidebarUser = currentUser
+    ? {
+        displayName:
+          currentUser.profile.display_name ??
+          currentUser.profile.username,
+        username: currentUser.profile.username,
+        avatarUrl: currentUser.profile.avatar_url,
+        roleName: currentUser.profile.role?.name ?? null,
+      }
+    : null;
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarTrigger />
       </SidebarHeader>
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -43,12 +49,14 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <DiscordLoginButton />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+
+      <SidebarFooter>
+        <SidebarAccount user={sidebarUser} />
+      </SidebarFooter>
     </Sidebar>
   )
 }

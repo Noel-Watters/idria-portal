@@ -1,8 +1,9 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { IdriaProfile } from "@/types/profile";
 
+import { createClient } from "@/lib/supabase/server";
+
+import { IdriaProfile } from "@/types/profile";
 
 export const getCurrentUser = cache(async () => {
   const supabase = await createClient();
@@ -23,14 +24,23 @@ export const getCurrentUser = cache(async () => {
       username,
       display_name,
       avatar_url,
-      staff_role,
       is_whitelisted,
-      is_banned
+      is_banned,
+      staff_role,
+      role:roles!profile_staff_role_fkey (
+        id,
+        name,
+        key,
+        color_hex,
+        is_staff,
+        is_active
+      )
     `)
     .eq("id", user.id)
     .single<IdriaProfile>();
 
   if (profileError || !profile) {
+    console.error(profileError);
     return null;
   }
 
@@ -57,7 +67,13 @@ export const requireUser = cache(async () => {
 export const requireStaff = cache(async () => {
   const currentUser = await requireUser();
 
-  if (!currentUser.profile.staff_role) {
+  const role = currentUser.profile.role;
+
+  if (
+    !role ||
+    !role.is_active ||
+    !role.is_staff
+  ) {
     redirect("/Account");
   }
 
@@ -65,13 +81,13 @@ export const requireStaff = cache(async () => {
 });
 
 export const requireAdmin = cache(async () => {
-  const currentUser = await requireUser();
+  const currentUser = await requireStaff();
 
-  const allowedRoles = ["Owner", "Admin"];
+  const role = currentUser.profile.role;
 
   if (
-    !currentUser.profile.staff_role ||
-    !allowedRoles.includes(currentUser.profile.staff_role)
+    !role ||
+    !["owner", "admin"].includes(role.key)
   ) {
     redirect("/Account");
   }

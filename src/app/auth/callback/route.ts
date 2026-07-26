@@ -64,13 +64,6 @@ export async function GET(request: Request) {
     metadata.picture ??
     null;
 
-    console.log({
-  id: user.id,
-  discordId,
-  username,
-  displayName,
-  avatarUrl,
-});
 
   const { error: profileError } = await supabase
     .from("profile")

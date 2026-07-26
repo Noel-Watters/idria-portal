@@ -22,11 +22,6 @@ export default async function AccountPage() {
           : "Not Whitelisted"}
       </p>
 
-      {profile.staff_role && (
-        <p>Staff role: {profile.staff_role}</p>
-      )}
-
-      <LogoutButton />
     </main>
   );
 }
