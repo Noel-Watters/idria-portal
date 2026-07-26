@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const playfairDisplayHeading = Playfair_Display({subsets:['latin'],variable:'--font-heading'});
 
@@ -38,6 +39,7 @@ export default function RootLayout({
     <html lang="en" className={cn("dark", notoSerif.variable, playfairDisplayHeading.variable)}>
       <body>
         <Analytics />
+        <SpeedInsights/>
         <SidebarProvider>
           <AppSidebar />
           <main className="flex-1 min-w-0">
