@@ -1,4 +1,5 @@
 import WikiPageView from "@/components/editor/PageView";
+import PageUnavailable from "@/components/PageUnavailable";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import type { page } from "@/types/wiki";
@@ -48,11 +49,21 @@ if (reservedPaths.includes(path[0])) {
     }
   );
 
-  if (!response.ok) {
+  if (response.status === 403) {
+    return (
+      <PageUnavailable
+        title="This page is still in the works"
+        message="This is currently being worked on, but it has not been made available yet. Please check back soon."
+        autoRedirect
+      />
+    );
+  }
+
+   if (response.status === 404) {
     notFound();
   }
 
-  const page = await response.json();
+  const page = (await response.json()) as PageWithPermissions;
   const userRank = currentUser?.profile.role?.rank ?? 0;
   const canEdit = userRank >= page.edit_role.rank;
   const canPublish = userRank >= page.publish_role.rank;
