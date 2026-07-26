@@ -5,6 +5,7 @@ import CreatePageDialog from "./CreatePageDialog";
 import PublishPageDialog from "./PublishPageDialog";
 import WikiPageRow from "./WikiPageRow";
 import { role } from "@/types/role";
+import { useRouter } from "next/navigation";
 
 
 type WikiDashboardProps = {
@@ -22,6 +23,7 @@ export default function WikiDashboard({
   templates,
   currentUserRole,
 }: WikiDashboardProps) {
+  const router = useRouter();
   const [publishPage, setPublishPage] =
     useState<page_dashboard | null>(null);
 
@@ -47,128 +49,133 @@ export default function WikiDashboard({
     };
   }, [initialPages]);
 
-  function handleStatusChange(
-    page: page_dashboard,
-    status: WikiPageStatus
+  async function handleStatusChange(
+  page: page_dashboard,
+  status: WikiPageStatus
+) {
+  if (
+    status === "published" &&
+    page.status !== "published"
   ) {
-    if (
-      status === "published" &&
-      page.status !== "published"
-    ) {
-      setPublishPage(page);
-      return;
+    setPublishPage(page);
+    return;
+  }
+
+  await fetch(`/api/pages/${page.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      status,
+    }),
+  });
+
+  router.refresh();
+}
+
+
+async function handlePublish() {
+  if (!publishPage) {
+    return;
+  }
+
+  const response = await fetch(
+    `/api/pages/${publishPage.id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: "published",
+      }),
     }
+  );
 
-    /*
-     * DATABASE CONNECTION:
-     * Update public.pages.status here.
-     *
-     * Expected input:
-     * {
-     *   page_id: page.id,
-     *   status
-     * }
-     */
-    void page;
-    void status;
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      result.error ?? "The page could not be published."
+    );
   }
 
-  function handlePublish() {
-    if (!publishPage) {
-      return;
-    }
+  setPublishPage(null);
+  router.refresh();
+}
 
-    /*
-     * DATABASE CONNECTION:
-     * Publish this page here.
-     *
-     * Update:
-     * pages.status = "published"
-     * pages.published_at = current timestamp
-     * pages.updated_at = current timestamp
-     * pages.updated_by = authenticated profile ID
-     */
+  async function handleNavigationChange(
+  pageId: string,
+  navigationGroupId: string
+) {
+  await fetch(`/api/pages/${pageId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      navigation_group_id: navigationGroupId,
+    }),
+  });
 
-    setPublishPage(null);
+  router.refresh();
+}
+
+  async function handleEditRoleChange(
+  pageId: string,
+  editRoleId: string
+) {
+  await fetch(`/api/pages/${pageId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      edit_role_id: editRoleId,
+    }),
+  });
+
+  router.refresh();
+}
+
+  async function handlePublishRoleChange(
+  pageId: string,
+  publishRoleId: string
+) {
+  await fetch(`/api/pages/${pageId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      publish_role_id: publishRoleId,
+    }),
+  });
+
+  router.refresh();
+}
+
+  async function handleCreatePage(
+  input: CreateWikiPageInput
+) {
+  const response = await fetch("/api/pages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create page.");
   }
 
-  function handleNavigationChange(
-    pageId: string,
-    navigationGroupId: string
-  ) {
-    /*
-     * DATABASE CONNECTION:
-     * Update public.pages.navigation_group_id here.
-     *
-     * Expected input:
-     * {
-     *   page_id: pageId,
-     *   navigation_group_id: navigationGroupId
-     * }
-     */
-    void pageId;
-    void navigationGroupId;
-  }
+  const page: page_dashboard = await response.json();
 
-  function handleEditRoleChange(
-    pageId: string,
-    editRoleId: string
-  ) {
-    /*
-     * DATABASE CONNECTION:
-     * Update public.pages.edit_role_id here.
-     *
-     * Admin and Owner only.
-     *
-     * Expected input:
-     * {
-     *   page_id: pageId,
-     *   edit_role_id: editRoleId
-     * }
-     */
-    void pageId;
-    void editRoleId;
-  }
 
-  function handlePublishRoleChange(
-    pageId: string,
-    publishRoleId: string
-  ) {
-    /*
-     * DATABASE CONNECTION:
-     * Update public.pages.publish_role_id here.
-     *
-     * Admin and Owner only.
-     *
-     * Expected input:
-     * {
-     *   page_id: pageId,
-     *   publish_role_id: publishRoleId
-     * }
-     */
-    void pageId;
-    void publishRoleId;
-  }
-
-  function handleCreatePage(
-    input: CreateWikiPageInput
-  ) {
-    /*
-     * DATABASE CONNECTION:
-     * Create a new row in public.pages here.
-     *
-     * The server action should:
-     *
-     * 1. Require an authenticated Admin or Owner.
-     * 2. Generate the page path.
-     * 3. Insert the page with status = "draft".
-     * 4. Set created_by to the authenticated profile ID.
-     * 5. Set updated_by to the authenticated profile ID.
-     * 6. Return the new page ID.
-     * 7. Navigate to the page editor.
-     */
-    void input;
-  }
+  router.push(`/Staff/Pages/${page.path}`);
+}
 
   return (
     <>
@@ -221,7 +228,7 @@ export default function WikiDashboard({
 
         <section className="overflow-hidden rounded-xl border bg-card">
           <div className="overflow-x-auto">
-            <div className="min-w-[1450px]">
+            <div className="min-w-362.5">
               <div className="grid grid-cols-[minmax(180px,1fr)_minmax(170px,1fr)_170px_170px_170px_150px_180px_160px] gap-4 border-b bg-muted/30 px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 <span>Page</span>
                 <span>Path</span>
