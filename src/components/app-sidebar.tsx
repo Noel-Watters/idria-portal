@@ -1,7 +1,7 @@
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarHeader, SidebarFooter, SidebarTrigger,} from "@/components/ui/sidebar"
 import SidebarAccount from "@/components/SidebarAccount";
 import Link from "next/link"
-import { BookOpen, ScrollText } from "lucide-react"
+import { BookOpen, ScrollText, Pickaxe, UserRound, Swords } from "lucide-react"
 import Image from "next/image"
 import { getCurrentUser } from "@/lib/auth";
 
@@ -13,6 +13,9 @@ const navItems = [
   { title: "Home", url: "/", icon: IdriaLogo },
   { title: "Lore", url: "/Lore", icon: BookOpen },
   { title: "Rules", url: "/Rules", icon: ScrollText },
+  { title: "Races", url: "/Races", icon: UserRound },
+  { title: "Classes", url: "/Classes", icon: Swords },
+  { title: "Professions", url: "/Professions", icon: Pickaxe },
 ]
 
 export async function AppSidebar() {

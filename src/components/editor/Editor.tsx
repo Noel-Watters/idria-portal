@@ -8,6 +8,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
+import { TableKit } from "@tiptap/extension-table";
 
 import Toolbar from "./Toolbar";
 import "./Editor.css";
@@ -55,6 +56,15 @@ export default function Editor({
         underline: false,
       }),
 
+       TableKit.configure({
+        table: {
+          resizable: true,
+          HTMLAttributes: {
+            class: "wiki-table",
+          },
+        },
+      }),
+
       Underline,
 
       Highlight.configure({
@@ -89,6 +99,9 @@ export default function Editor({
           "paragraph",
         ],
       }),
+
+
+
     ],
 
     content: getSafeContent(content),

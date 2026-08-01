@@ -22,37 +22,53 @@ export default function HomePage() {
               priority
             />
 
-            <p className="text-left whitespace-normal">Welcome to Idria, a whitelisted Dungeons & Dragons roleplay server set within the Forgotten Realms, where long-term storytelling, 
-              meaningful character progression, and a living world take center stage.</p>
-            <p> Built from the ground up with roleplay as the primary focus, Idria is designed to reward players who invest in their characters and become part of the world's ongoing story. 
-              Whether you dream of becoming a renowned adventurer, an influential merchant, a dangerous assassin, or a humble traveler, every character has the opportunity 
-              to leave their mark on the realm.</p>
-            <p>Rather than rushing from event to event, Idria embraces a slower, more immersive style of roleplay. Player choices have lasting consequences, 
-              settlements grow and change over time, and the stories created by the community become part of the world's history. With regular content updates, evolving storylines, 
-              and a focus on collaborative storytelling, Idria is a world built to grow alongside its players.</p>
             <DevtNotice />
+            <hr className="border-border-medium my-6" />
+
+            <h1>Welcome to Idria</h1>
+
+            <p className="pt-5">In Idria, the stories belong to the players.</p>
+
+            <p>Set within the Forgotten Realms, Idria is a whitelisted Dungeons & Dragons roleplay server built around one core belief: 
+              roleplay should have lasting consequences. The decisions you make, the people you meet, and the ambitions you pursue don't simply 
+              disappear when a scene ends. They become part of a living world that continues to grow long after you've logged off.</p>
+
+            <p>We believe game mechanics should exist to serve roleplay. Every system we create is designed to give players the tools to pursue ambitious goals, 
+              tell unforgettable stories, and shape the future of the world through collaboration, conflict, and creativity.</p>
+            
+            <p><strong>With enough roleplay, anything is possible.</strong></p>
+
             
             <hr className="border-border-medium my-6" />
 
-            <h3>Our Long-term Vision</h3>
-            <p>Idria is more than a place to adventure. It's a world designed to support every style of roleplay.</p>
-            <p>Our long-term vision includes:</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>The D&D classes and races we all know and love</li>
-              <li>Custom Profession System with unique roles that encourage trade.</li>
-              <li>Player-driven economy built around crafting, trade, and cooperation.</li>
-              <li>Dice-based combat for both PvP & DM ran events</li>
-              <li>Dungeon Master-led events and quests with meaningful, lasting consequences.</li>
-              <li>A dynamic world that evolves through player choices and actions.</li>
-              <li>Player settlement system allowing communities to establish and grow their own towns.</li>
-              <li>Central hub supporting both heroic and villainous roleplay.</li>
-              <li>Custom caravan trading system creating opportunities for merchants, guards, and bandits.</li>
-              <li>An immersive Conan Exiles roleplay experience inspired by the Forgotten Realms</li>
-            </ul>
+            <h1>Core Features</h1>
+            <p>Idria is built around a collection of interconnected systems, each designed with one goal in mind: creating meaningful roleplay and rewarding player investment. While many of these systems are still in development, this is the vision we're working toward.</p>
+
+            <h3>Forgotten Realms</h3>
+            <p>Idria is set within the Forgotten Realms, one of the most beloved and detailed fantasy settings ever created. Its rich history, countless factions, powerful magic, and endless mysteries provide the foundation for stories that feel grounded, immersive, and full of opportunity.</p>
+
+            <h3>D&D Dice System</h3>
+            <p>Our dice system forms the backbone of conflict and character progression. Combat follows familiar Dungeons & Dragons mechanics with classes, spells, feats, and abilities, while the same system also supports social encounters, research, rituals, exploration, and other roleplay beyond combat.</p>
+
+            <h3>Profession System</h3>
+            <p>Professions are designed to encourage specialization and cooperation rather than allowing every character to do everything. As you progress, you'll unlock new recipes, abilities, and opportunities, creating meaningful reasons to trade, partner with others, or become renowned for mastering your craft.</p>
+
+            <h3>Player-Driven Economy</h3>
+            <p>Our economy is built around players, not admin shops. While everyone will have reliable ways to earn gold, the greatest wealth will come through trade, crafting, services, and the relationships you build with other players.</p>
+
+            <h3>Factions</h3>
+            <p>The world is home to powerful organizations that shape Idria's politics, conflicts, and future. Whether you pledge your loyalty, oppose their ambitions, or attempt to influence them from within, your choices can change the balance of power across the realm.</p>
+
+            <h3>Settlement System</h3>
+            <p>Players will have the opportunity to establish and grow their own settlements. As your community grows, you'll unlock powerful upgrades, unique opportunities, and new ways to shape the world around you. Align your settlement with one of Idria's great factions, or remain independent and forge your own identity.</p>
+
+            <h3>Dynamic DM Events</h3>
+            <p>Our Dungeon Masters don't simply run isolated events. They tell collaborative stories that react to the world around them. Major decisions, victories, failures, alliances, and betrayals all have the potential to influence future events, ensuring the world's story is shaped by the players who inhabit it.</p>
+
 
             <hr className="border-border-medium my-6" />
 
-            <h3>A lost Kingdom</h3>
+            <h1>A lost Kingdom</h1>
             <p>For centuries, the lands of Idria have remained isolated from the rest of Faerûn, 
               hidden behind the remnants of an ancient mythal created to imprison a terrible evil beneath the ruined 
               capital of Thoremere. Once a prosperous kingdom of powerful sorcerous houses, fertile farmlands, and grand cities, 
